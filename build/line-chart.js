@@ -1,6 +1,6 @@
 
 /*
-line-chart - v1.1.5 - 11 January 2015
+line-chart - v1.1.5 - 23 January 2015
 https://github.com/n3-charts/line-chart
 Copyright (c) 2015 n3-charts
  */
@@ -32,11 +32,11 @@ directive('linechart', [
         left = _u.getPixelCssProp(parent, 'padding-left');
         right = _u.getPixelCssProp(parent, 'padding-right');
         dimensions.width = +(attrs.width || parent.offsetWidth || 900) - left - right;
-        return dimensions.height = +(attrs.height || parent.offsetHeight || 500) - top - bottom;
+        dimensions.height = +(attrs.height || parent.offsetHeight || 500) - top - bottom;
       };
       scope.redraw = function() {
         scope.updateDimensions(dim);
-        return scope.update(dim);
+        scope.update(dim);
       };
       isUpdatingOptions = false;
       initialHandlers = {
@@ -818,6 +818,7 @@ mod.factory('n3utils', [
       adjustMargins: function(svg, dimensions, options, data) {
         var leftSeries, leftWidest, rightSeries, rightWidest, series;
         this.resetMargins(dimensions);
+        return;
         if (!(data && data.length)) {
           return;
         }
@@ -871,9 +872,14 @@ mod.factory('n3utils', [
         bbox = this.getTextBBox;
         ticks = svg.select("." + axisKey + ".axis").selectAll('.tick');
         if ((_ref = ticks[0]) != null) {
-          _ref.map(function(t) {
-            return max = Math.max(max, bbox(t).width);
+          _ref.forEach(function(t) {
+            var w;
+            w = bbox(t).width;
+            return max = Math.max(max, w);
           });
+        }
+        if (axisKey === 'y') {
+          console.log(max);
         }
         return max;
       },

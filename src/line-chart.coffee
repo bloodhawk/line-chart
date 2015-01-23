@@ -24,10 +24,13 @@ directive('linechart', ['n3utils', '$window', '$timeout', (n3utils, $window, $ti
       dimensions.width = +(attrs.width || parent.offsetWidth || 900) - left - right
       dimensions.height = +(attrs.height || parent.offsetHeight || 500) - top - bottom
 
+      return
+
     scope.redraw = ->
       scope.updateDimensions(dim)
       scope.update(dim)
 
+      return
 
     isUpdatingOptions = false
     initialHandlers =

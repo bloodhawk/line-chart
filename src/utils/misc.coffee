@@ -176,9 +176,9 @@
 
       adjustMargins: (svg, dimensions, options, data) ->
         this.resetMargins(dimensions)
+        return
         return unless data and data.length
         return unless options.series.length
-
         dimensions.left = this.getWidestTickWidth(svg, 'y')
         dimensions.right = this.getWidestTickWidth(svg, 'y2')
 
@@ -221,8 +221,11 @@
         bbox = this.getTextBBox
 
         ticks = svg.select(".#{axisKey}.axis").selectAll('.tick')
-        ticks[0]?.map (t) -> max = Math.max(max, bbox(t).width)
+        ticks[0]?.forEach (t) ->
+          w = bbox(t).width
+          max = Math.max(max, w)
 
+        console.log max if axisKey is 'y'
         return max
 
       getWidestOrdinate: (data, series, options) ->
