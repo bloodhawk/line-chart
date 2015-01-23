@@ -66,7 +66,7 @@ directive('linechart', ['n3utils', '$window', '$timeout', (n3utils, $window, $ti
       if isThumbnail
         _u.adjustMarginsForThumbnail(dimensions, axes)
       else
-        _u.adjustMargins(svg, dimensions, options, scope.data)
+        _u.adjustMargins(dimensions, options)
 
       _u.createContent(svg, handlers)
 

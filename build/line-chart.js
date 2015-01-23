@@ -72,7 +72,7 @@ directive('linechart', [
         if (isThumbnail) {
           _u.adjustMarginsForThumbnail(dimensions, axes);
         } else {
-          _u.adjustMargins(svg, dimensions, options, scope.data);
+          _u.adjustMargins(dimensions, options);
         }
         _u.createContent(svg, handlers);
         if (dataPerSeries.length) {
@@ -815,38 +815,19 @@ mod.factory('n3utils', [
         dimensions.top = defaults.top;
         return dimensions.bottom = defaults.bottom;
       },
-      adjustMargins: function(svg, dimensions, options, data) {
-        var leftSeries, leftWidest, rightSeries, rightWidest, series;
+      adjustMargins: function(dimensions, options) {
+        var y, y2, _ref;
         this.resetMargins(dimensions);
-        return;
-        if (!(data && data.length)) {
+        if (options.axes == null) {
           return;
         }
-        if (!options.series.length) {
-          return;
+        _ref = options.axes, y = _ref.y, y2 = _ref.y2;
+        if ((y != null ? y.width : void 0) != null) {
+          dimensions.left = y != null ? y.width : void 0;
         }
-        dimensions.left = this.getWidestTickWidth(svg, 'y');
-        dimensions.right = this.getWidestTickWidth(svg, 'y2');
-        if (dimensions.right === 0) {
-          dimensions.right = 20;
+        if ((y2 != null ? y2.width : void 0) != null) {
+          dimensions.right = y2 != null ? y2.width : void 0;
         }
-        if (options.tooltip.mode === 'scrubber') {
-          return;
-        }
-        series = options.series;
-        leftSeries = series.filter(function(s) {
-          return s.axis !== 'y2';
-        });
-        leftWidest = this.getWidestOrdinate(data, leftSeries, options);
-        dimensions.left = this.estimateSideTooltipWidth(svg, leftWidest).width + 20;
-        rightSeries = series.filter(function(s) {
-          return s.axis === 'y2';
-        });
-        if (!rightSeries.length) {
-          return;
-        }
-        rightWidest = this.getWidestOrdinate(data, rightSeries, options);
-        return dimensions.right = this.estimateSideTooltipWidth(svg, rightWidest).width + 20;
       },
       adjustMarginsForThumbnail: function(dimensions, axes) {
         dimensions.top = 1;
@@ -873,13 +854,8 @@ mod.factory('n3utils', [
         ticks = svg.select("." + axisKey + ".axis").selectAll('.tick');
         if ((_ref = ticks[0]) != null) {
           _ref.forEach(function(t) {
-            var w;
-            w = bbox(t).width;
-            return max = Math.max(max, w);
+            return max = Math.max(max, bbox(t).width);
           });
-        }
-        if (axisKey === 'y') {
-          console.log(max);
         }
         return max;
       },

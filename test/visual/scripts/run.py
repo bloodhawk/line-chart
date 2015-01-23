@@ -106,7 +106,7 @@ def has_expected_image(path):
 
 
 def are_files_missing(path):
-  mandatories = ['html', 'javascript']
+  mandatories = ['html', 'options', 'data']
   return filter(lambda m:not os.path.isfile(path + '/' + m), mandatories)
 
 

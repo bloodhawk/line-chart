@@ -72,7 +72,7 @@ directive('linechart', ['n3utils', '$window', '$timeout', (n3utils, $window, $ti
       if isThumbnail
         _u.adjustMarginsForThumbnail(dimensions, axes)
       else
-        _u.adjustMargins(svg, dimensions, options, scope.data)
+        _u.adjustMargins(dimensions, options)
 
       _u.createContent(svg, handlers)
 
@@ -768,28 +768,16 @@ mod.factory('n3utils', ['$window', '$log', '$rootScope', ($window, $log, $rootSc
         dimensions.top = defaults.top
         dimensions.bottom = defaults.bottom
 
-      adjustMargins: (svg, dimensions, options, data) ->
+      adjustMargins: (dimensions, options) ->
         this.resetMargins(dimensions)
+        return unless options.axes?
+
+        {y, y2} = options.axes
+
+        dimensions.left = y?.width if y?.width?
+        dimensions.right = y2?.width if y2?.width?
+
         return
-        return unless data and data.length
-        return unless options.series.length
-        dimensions.left = this.getWidestTickWidth(svg, 'y')
-        dimensions.right = this.getWidestTickWidth(svg, 'y2')
-
-        if dimensions.right is 0 then dimensions.right = 20
-
-        return if options.tooltip.mode is 'scrubber'
-        series = options.series
-
-        leftSeries = series.filter (s) -> s.axis isnt 'y2'
-        leftWidest = this.getWidestOrdinate(data, leftSeries, options)
-        dimensions.left = this.estimateSideTooltipWidth(svg, leftWidest).width + 20
-
-        rightSeries = series.filter (s) -> s.axis is 'y2'
-        return unless rightSeries.length
-
-        rightWidest = this.getWidestOrdinate(data, rightSeries, options)
-        dimensions.right = this.estimateSideTooltipWidth(svg, rightWidest).width + 20
 
       adjustMarginsForThumbnail: (dimensions, axes) ->
         dimensions.top = 1
@@ -815,11 +803,8 @@ mod.factory('n3utils', ['$window', '$log', '$rootScope', ($window, $log, $rootSc
         bbox = this.getTextBBox
 
         ticks = svg.select(".#{axisKey}.axis").selectAll('.tick')
-        ticks[0]?.forEach (t) ->
-          w = bbox(t).width
-          max = Math.max(max, w)
+        ticks[0]?.forEach (t) -> max = Math.max(max, bbox(t).width)
 
-        console.log max if axisKey is 'y'
         return max
 
       getWidestOrdinate: (data, series, options) ->
